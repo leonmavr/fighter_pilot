@@ -1,0 +1,86 @@
+# Planet Aces
+
+Starter scaffold for a low-poly 3D fighter pilot game with a pure C++ simulation core and a raylib-based native prototype renderer.
+
+## Current renderer choice
+
+**Graphics engine:** raylib
+
+**Renderer backend:** OpenGL via raylib's built-in 3D pipeline
+
+For this repository, raylib is the best immediate fit because you asked to integrate graphics directly into the existing C++ and CMake codebase and to keep the door open for `.obj` assets later.
+
+Why this fits your game:
+
+- It keeps the whole prototype in standard C++ with straightforward CMake integration.
+- It already supports loading `.obj` models with `LoadModel`, so you can move from procedural debug meshes to imported planes and buildings later.
+- It is lightweight enough that you can iterate on flight feel, camera, terrain, bullets, and HUD before committing to a heavier engine workflow.
+
+Why not start with a custom renderer:
+
+- Terrain, post-processing, streaming, editor tooling, UI, materials, and asset iteration will dominate your time before flight physics does.
+- A custom renderer is only worth it if renderer programming is the project itself.
+
+Why not use a heavier engine yet:
+
+- Godot 4 is still a strong future option if you later want a full editor-driven content pipeline.
+- Right now the fastest path is to keep the existing CMake simulation and add a native renderer around it.
+
+## What is already set up
+
+- A CMake-based simulation library in `planet_aces_sim`
+- A small 3D demo executable in `planet_aces_lab`
+- A smoke test in `planet_aces_smoke`
+- An initial flight model that handles thrust, drag, lift, gravity, and simple control rates
+- A raylib rendering loop with a chase camera, low-poly aircraft mesh, terrain, and HUD
+- Architecture notes for splitting simulation from rendering
+
+## Build
+
+```bash
+cmake --preset default
+cmake --build --preset default
+ctest --preset default
+./build/default/planet_aces_lab
+./build/default/planet_aces_lab --smoke
+```
+
+## Recommended project architecture
+
+Keep the game in two layers:
+
+1. `planet_aces_sim`
+   Deterministic gameplay simulation in standard C++.
+
+2. Native renderer layer
+   Rendering, camera, terrain visuals, HUD, debug views, input mapping, and later imported assets.
+
+That split keeps your core game portable and testable while still letting the rendering layer evolve independently.
+
+## Suggested milestone order
+
+1. Lock the aircraft state model, controls, and flight loop.
+2. Add collision volumes, bullets, and damage model.
+3. Add AI aircraft and simple SAM/AAA ground enemies.
+4. Add terrain streaming and buildings.
+5. Add sensors, radar abstractions, targeting, and HUD.
+6. Add visual polish like motion blur, glow, atmospheric fog, and contrails.
+
+## Renderer recommendation details
+
+Use raylib first for the prototype.
+
+- `.obj` support is available later through `LoadModel`.
+- The current demo is procedural so you can start without any art pipeline friction.
+- Sense of speed should come first from chase-camera behavior, FOV response, terrain scale cues, and particles; advanced blur can come later.
+- Fog and glow can be added later with shader passes once the core loop is solid.
+
+## When to choose something else
+
+Use Godot 4 if you later want a more editor-driven scene pipeline, more built-in tooling, and more advanced rendering features without writing your own shader stack.
+
+Use O3DE only if you explicitly want a fully open-source C++ engine and are willing to accept much heavier setup and slower iteration.
+
+## Next practical step
+
+After this integration, the next high-value task is to add a terrain height sampler interface plus an aircraft-vs-terrain collision pass. That becomes the spine for world generation, AI navigation, and building placement.
