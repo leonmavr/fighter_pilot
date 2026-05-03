@@ -626,17 +626,17 @@ Color Terrain::color_for_height(double heightMeters) const noexcept {
     if (heightMeters < parameters_.waterLevelMeters) {
         return waterColor;
     }
-    if (heightMeters < 100.0) {
-        return lerp_color(lowGreen, darkGreen, heightMeters / 100.0);
+    if (heightMeters < kLowElevation) {
+        return lerp_color(lowGreen, darkGreen, heightMeters / kLowElevation);
     }
-    if (heightMeters < 1'000.0) {
-        return lerp_color(darkGreen, darkBrown, (heightMeters - 100.0) / 900.0);
+    if (heightMeters < kMidElevation) {
+        return lerp_color(darkGreen, darkBrown, (heightMeters - kLowElevation) / (kMidElevation - kLowElevation));
     }
-    if (heightMeters < 2'000.0) {
-        return lerp_color(darkBrown, lightBrown, (heightMeters - 1'000.0) / 1'000.0);
+    if (heightMeters < kHighElevation) {
+        return lerp_color(darkBrown, lightBrown, (heightMeters - kMidElevation) / (kHighElevation - kMidElevation));
     }
 
-    return lerp_color(lightBrown, snowWhite, clamp((heightMeters - 2'000.0) / 500.0, 0.0, 1.0));
+    return lerp_color(lightBrown, snowWhite, clamp((heightMeters - kHighElevation) / (kSnowElevation - kHighElevation), 0.0, 1.0));
 }
 
 }  // namespace planet_aces

@@ -30,7 +30,7 @@ struct TerrainParameters {
     std::array<double, 5> lodRadiusFractions {0.28, 0.42, 0.62, 0.82, 1.0};
     std::array<double, 5> lodMaxDistanceMeters {1'250.0, 2'400.0, 4'800.0, 8'800.0, 18'000.0};
     std::array<double, 5> lodCellSizeMeters {25.0, 50.0, 100.0, 200.0, 400.0};
-    unsigned int noiseSeed = 1'331U;
+    unsigned int noiseSeed = 1'330U;
 };
 
 class Terrain {
@@ -45,6 +45,11 @@ public:
     void draw(const Camera3D& camera);
 
 private:
+    static constexpr double kLowElevation = 100.0;
+    static constexpr double kMidElevation = 800.0;
+    static constexpr double kHighElevation = 1600.0;
+    static constexpr double kSnowElevation = 2200.0;
+
     struct ChunkKey {
         int chunkX = 0;
         int chunkZ = 0;
